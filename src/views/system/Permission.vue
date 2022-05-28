@@ -10,12 +10,12 @@
     </el-breadcrumb>
     <!-- 搜索筛选 -->
     <el-form :inline="true" :model="formInline" class="user-search">
-      <el-form-item label="搜索：">
-        <el-input size="small" v-model="formInline.menuName" placeholder="输入权限名称"></el-input>
-      </el-form-item>
-      <el-form-item label="">
-        <el-input size="small" v-model="formInline.perms" placeholder="输入权限CODE"></el-input>
-      </el-form-item>
+<!--      <el-form-item label="搜索：">-->
+<!--        <el-input size="small" v-model="formInline.menuName" placeholder="输入权限名称"></el-input>-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="">-->
+<!--        <el-input size="small" v-model="formInline.perms" placeholder="输入权限CODE"></el-input>-->
+<!--      </el-form-item>-->
 <!--      <el-form-item label="角色：">-->
 <!--        <el-select size="small" v-model="formInline.roleId" placeholder="请选择">-->
 <!--          <el-option selected label="请选择" value="0"></el-option>-->
@@ -23,22 +23,33 @@
 <!--        </el-select>-->
 <!--      </el-form-item>-->
       <el-form-item>
-        <el-button size="small" type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+<!--        <el-button size="small" type="primary" icon="el-icon-search" @click="search">搜索</el-button>-->
         <el-button size="small" type="primary" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
 <!--        <el-button size="small" type="primary" icon="el-icon-plus" @click="RolePermission()">配置权限</el-button>-->
       </el-form-item>
     </el-form>
     <!--列表-->
-    <el-table size="small" @selection-change="selectChange" :data="listData" highlight-current-row v-loading="loading" border element-loading-text="拼命加载中" style="width: 100%;">
+    <el-table size="small" @selection-change="selectChange"
+              :data="listData"
+              row-key="id"
+              default-expand-all
+              :tree-props="{children: 'menus'}"
+              highlight-current-row v-loading="loading"
+              border element-loading-text="拼命加载中"
+              style="width: 100%;">
       <el-table-column align="center" type="selection" width="60">
       </el-table-column>
-      <el-table-column sortable prop="id" label="编号" width="120">
+<!--      <el-table-column sortable prop="id" label="编号" width="120">-->
+<!--      </el-table-column>-->
+      <el-table-column sortable prop="menuName" label="权限名称" width="200">
       </el-table-column>
-      <el-table-column sortable prop="menuName" label="权限名称" width="300">
+      <el-table-column sortable prop="perms" label="权限CODE" width="200">
       </el-table-column>
-      <el-table-column sortable prop="perms" label="权限CODE" width="300">
+      <el-table-column sortable prop="icon" label="图标" width="200">
       </el-table-column>
-      <el-table-column sortable prop="createTime" label="创建时间" width="300">
+      <el-table-column sortable prop="url" label="路径" width="200">
+      </el-table-column>
+      <el-table-column sortable prop="createTime" label="创建时间" width="200">
         <template slot-scope="scope">
           <div>{{scope.row.createTime|timestampToTime}}</div>
         </template>
@@ -60,10 +71,22 @@
       </el-table-column>
     </el-table>
     <!-- 分页组件 -->
-    <Pagination v-bind:child-msg="pageparm" @callFather="callFather"></Pagination>
+<!--    <Pagination v-bind:child-msg="pageparm" @callFather="callFather"></Pagination>-->
     <!-- 编辑界面 -->
     <el-dialog :title="title" :visible.sync="editFormVisible" width="30%" @click="closeDialog">
       <el-form label-width="120px" :model="editForm" :rules="rules" ref="editForm">
+        <el-form-item label="上级菜单" prop="parentId" label-width="100px">
+          <el-select v-model="editForm.parentId" placeholder="请选择上级菜单">
+            <template v-for="item in listData">
+              <el-option :label="item.menuName" :value="item.id"></el-option>
+              <template v-for="child in item.menus">
+                <el-option :label="child.menuName" :value="child.id">
+                  <span>{{ '- ' + child.menuName }}</span>
+                </el-option>
+              </template>
+            </template>
+          </el-select>
+        </el-form-item>
         <el-form-item label="权限编号">
           <el-input size="small" v-model="editForm.id" auto-complete="off" placeholder="权限编号" disabled></el-input>
         </el-form-item>
@@ -72,6 +95,12 @@
         </el-form-item>
         <el-form-item label="权限CODE" prop="perms">
           <el-input size="small" v-model="editForm.perms" auto-complete="off" placeholder="权限CODE"></el-input>
+        </el-form-item>
+        <el-form-item label="图标" prop="icon">
+          <el-input size="small" v-model="editForm.icon" auto-complete="off" placeholder="图标"></el-input>
+        </el-form-item>
+        <el-form-item label="路径" prop="icon">
+          <el-input size="small" v-model="editForm.url" auto-complete="off" placeholder="路径"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -83,14 +112,14 @@
 </template>
 
 <script>
-  import {
-    permissionList,
-    ermissionSave,
-    ermissionDelete,
-    roleDropDown,
-    RolePermission,
-    menuStatus
-  } from '../../api/userMG'
+import {
+  permissionList,
+  ermissionSave,
+  ermissionDelete,
+  roleDropDown,
+  RolePermission,
+  menuStatus, MenuTree
+} from '../../api/userMG'
 import Pagination from '../../components/Pagination'
 export default {
   data() {
@@ -104,6 +133,9 @@ export default {
         id: '',
         menuName: '',
         perms: '',
+        parentId: '',
+        icon: '',
+        url: '',
         // token: localStorage.getItem('logintoken')
       },
       // rules表单验证
@@ -167,26 +199,43 @@ export default {
        * 调用接口，注释上面模拟数据 取消下面注释
        */
       // 获取权限列表
-      permissionList(parameter)
-        .then(res => {
-          this.loading = false
-          if (res.status === 500) {
-            this.$message({
-              type: 'warning',
-              message: res.msg
-            })
-          } else {
-            this.listData = res.data.records
-            // 分页赋值
-            this.pageparm.currentPage = this.formInline.page
-            this.pageparm.pageSize = this.formInline.limit
-            this.pageparm.total = res.data.total
-          }
-        })
+      // permissionList(parameter)
+      //   .then(res => {
+      //     this.loading = false
+      //     if (res.status === 500) {
+      //       this.$message({
+      //         type: 'warning',
+      //         message: res.msg
+      //       })
+      //     } else {
+      //       this.listData = res.data.records
+      //       // 分页赋值
+      //       this.pageparm.currentPage = this.formInline.page
+      //       this.pageparm.pageSize = this.formInline.limit
+      //       this.pageparm.total = res.data.total
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.log(err)
+      //     this.loading = false
+      //     this.$message.error('权限管理列表获取失败，请稍后再试！')
+      //   })
+      MenuTree()
+        .then(
+          res =>{
+            this.loading = false
+            if (res.status !==  200) {
+              this.$message({
+                type: 'info',
+                message: res.msg
+              })
+            }else {
+              this.listData = res.data
+            }}
+        )
         .catch(err => {
-          console.log(err)
           this.loading = false
-          this.$message.error('权限管理列表获取失败，请稍后再试！')
+          this.$message.error('获取权限列表失败，请稍后再试！')
         })
     },
     // 获取权限
@@ -258,11 +307,15 @@ export default {
         this.editForm.id = row.id
         this.editForm.menuName = row.menuName
         this.editForm.perms = row.perms
+        this.editForm.icon = row.icon
+        this.editForm.url = row.url
       } else {
         this.title = '添加'
         this.editForm.id = ''
         this.editForm.menuName = ''
         this.editForm.perms = ''
+        this.editForm.icon = ''
+        this.editForm.url = ''
       }
     },
     // 编辑、增加页面保存方法

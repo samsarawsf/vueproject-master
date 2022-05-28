@@ -309,7 +309,7 @@ export default {
           this.pageparm.total = res.data.total
         }
       }),
-        roleList(parameter)
+        roleList()
           .then(res => {
             this.loading = false
             if (res.status !==  200) {
