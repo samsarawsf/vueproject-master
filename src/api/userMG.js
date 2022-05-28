@@ -1,6 +1,6 @@
 import axios from 'axios';
 // 全局路径 请求的路径
-axios.defaults.baseURL = 'http://8.130.21.96:7777'
+// axios.defaults.baseURL = 'http://8.130.21.96:7777'
 import { loginreq, req } from './axiosFun';
 
 // 登录接口

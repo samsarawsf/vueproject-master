@@ -130,7 +130,7 @@
       getcode() {
         // alert(this.ruleForm.codeimg)
         //浏览器中有缓存所有要加时间戳
-        this.ruleForm.codeimg = "http://8.130.21.96:7777/api/user/getKaptchaImg?d="+ new Date();
+        this.ruleForm.codeimg = "http://localhost:7777/user/getKaptchaImg?d="+ new Date();
 
       }
     }
