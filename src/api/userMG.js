@@ -75,15 +75,44 @@ export const MenuTree = (params) => { return req("post","/api/menu/tree",params)
 export const RoleRightSave = (params) => { return req("post", "/api/role/changemenu", params) };
 
 /**
- * 公司管理
+ * 部门管理
  **/
-// 公司管理-获取公司列表
+// 部门管理-获取部门列表
 export const deptList = (params) => { return req("post", "/api/dept/list", params) };
-// 公司管理-保存（添加编辑）
+// 部门管理-保存（添加编辑）
 export const deptSave = (params) => { return req("post", "/api/dept/save", params) };
-// 公司管理-删除公司
+// 部门管理-删除部门
 export const deptDelete = (params) => { return req("post", "/api/dept/delete", params) };
+// 部门管理-修改状态
+export const deptStatus = (params) => { return req("post", "/api/dept/status", params) }
 
+
+/**
+ * 职位管理
+ */
+
+// 职位管理-获取职位列表
+export const jobList = (params) => { return req("post", "/api/job/list", params) };
+// 职位管理-保存（添加编辑）
+export const jobSave = (params) => { return req("post", "/api/job/save", params) };
+// 职位管理-删除职位
+export const jobDelete = (params) => { return req("post", "/api/job/delete", params) };
+// 职位管理-修改状态
+export const jobStatus = (params) => { return req("post", "/api/job/status", params) }
+
+
+/**
+ * 员工管理
+ */
+
+// 员工管理-获取员工列表
+export const empList = (params) => { return req("post", "/api/emp/list", params) };
+// 员工管理-修改状态
+export const empStatus = (params) => { return req("post", "/api/emp/status", params) };
+// 员工管理-保存（添加编辑）
+export const empSave = (params) => { return req("post", "/api/emp/save", params) };
+// 员工管理-删除员工
+export const empDelete = (params) => { return req("post","/api/emp/delete",params)};
 /**
  * 系统环境变量
  **/

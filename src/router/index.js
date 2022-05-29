@@ -8,8 +8,14 @@ import index from '@/views/index';
 /**
  * 基础菜单
  */
-// 商品管理
-import Goods from '@/views/goods/Goods';
+// 部门管理
+import Dept from '@/views/company/Dept';
+
+// 员工管理
+import Employee from "@/views/company/Employee";
+
+// 职位管理
+import Job from "@/views/company/Job";
 // 机器信息管理
 import Machine from '@/views/machine/Machine';
 // 货道信息管理
@@ -29,7 +35,7 @@ import Module from '@/views/system/Module';
 // 角色管理
 import Role from '@/views/system/Role';
 // 公司管理
-import Dept from '@/views/system/Dept';
+import Dept2 from '@/views/system/Dept';
 // 系统环境变量
 import Variable from '@/views/system/Variable';
 // 权限管理
@@ -50,10 +56,11 @@ import druidLogin from '@/views/druid/login';
 // 图表界面
 import statistics from '@/views/charts/statistics';
 
+
 // 启用路由
 Vue.use(Router);
 
-// 导出路由 
+// 导出路由
 export default new Router({
     routes: [{
         path: '/',
@@ -77,13 +84,29 @@ export default new Router({
         component: index,
         iconCls: 'el-icon-tickets',
         children: [{
-            path: '/goods/Goods',
-            name: '商品管理',
-            component: Goods,
+            path: '/company/Dept',
+            name: '部门管理',
+            component: Dept,
             meta: {
                 requireAuth: true
             }
-        }, {
+        },
+          {
+            path: '/company/Employee',
+            name: '员工管理',
+            component: Employee,
+            meta: {
+              requireAuth: true
+            }
+          },
+          {
+            path: '/company/Job',
+            name: '职位管理',
+            component: Job,
+            meta: {
+              requireAuth: true
+            }
+          },{
             path: '/machine/Machine',
             name: '机器信息管理',
             component: Machine,
@@ -128,7 +151,7 @@ export default new Router({
         }, {
             path: '/system/Dept',
             name: '公司管理',
-            component: Dept,
+            component: Dept2,
             meta: {
                 requireAuth: true
             }

@@ -38,8 +38,8 @@ export default {
       data: [
         {
           menuid: 1,
-          icon: 'li-icon-xiangmuguanli',
-          menuName: '基础管理',
+          icon: 'icon-cs-manage',
+          menuName: '公司管理',
           hasThird: null,
           url: null,
           menus: [
@@ -48,7 +48,22 @@ export default {
               icon: 'icon-cat-skuQuery',
               menuName: '部门管理',
               hasThird: 'N',
-              url: 'goods/Goods',
+              url: 'company/Dept',
+              menus: null
+            },{
+              menuid: 3,
+              icon: 'icon-cus-manage',
+              menuName: '员工管理',
+              hasThird: 'N',
+              url: 'company/Employee',
+              menus: null
+            }
+            ,{
+              menuid: 4,
+              icon: 'li-icon-dingdanguanli',
+              menuName: '职位管理',
+              hasThird: 'N',
+              url: 'company/Job',
               menus: null
             }
           ]

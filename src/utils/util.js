@@ -77,7 +77,7 @@ function delCookie(name) {
 };
 
 /**
- * 导出 
+ * 导出
  **/
 export {
     timestampToTime,

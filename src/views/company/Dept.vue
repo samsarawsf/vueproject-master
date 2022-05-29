@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { deptList, deptSave, deptDelete } from '../../api/userMG'
+import {deptList, deptSave, deptDelete, userStatus, deptStatus} from '../../api/userMG'
 import Pagination from '../../components/Pagination'
 export default {
   data() {
@@ -257,6 +257,37 @@ export default {
             message: '已取消删除'
           })
         })
+    },
+    // 修改type
+    editType: function (index, row) {
+      this.loading = true
+      let parm = {
+        id: '',
+        status: '',
+      }
+      parm.id = row.id
+      let status = row.status
+      if (status === '0') {
+        parm.status = '1'
+      } else {
+        parm.status = '0'
+      }
+      // 修改状态
+      deptStatus(parm).then(res => {
+        this.loading = false
+        if (res.status === 500) {
+          this.$message({
+            type: 'error',
+            message: res.msg
+          })
+        } else {
+          this.$message({
+            type: 'success',
+            message: res.msg
+          })
+          this.getdata(this.formInline)
+        }
+      })
     },
     // 关闭编辑、增加弹出框
     closeDialog() {
