@@ -6,15 +6,12 @@
     <!-- 面包屑导航 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>商品管理</el-breadcrumb-item>
+      <el-breadcrumb-item>部门管理</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 搜索筛选 -->
     <el-form :inline="true" :model="formInline" class="user-search">
       <el-form-item label="搜索：">
-        <el-input size="small" v-model="formInline.deptName" placeholder="输入部门名称"></el-input>
-      </el-form-item>
-      <el-form-item label="">
-        <el-input size="small" v-model="formInline.deptNo" placeholder="输入部门代码"></el-input>
+        <el-input size="small" v-model="formInline.name" placeholder="输入部门名称"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button size="small" type="primary" icon="el-icon-search" @click="search">搜索</el-button>
@@ -25,16 +22,25 @@
     <el-table size="small" :data="listData" highlight-current-row v-loading="loading" border element-loading-text="拼命加载中" style="width: 100%;">
       <el-table-column align="center" type="selection" width="60">
       </el-table-column>
-      <el-table-column sortable prop="deptName" label="部门名称" width="300">
+      <el-table-column sortable prop="id" label="部门编号" width="100">
       </el-table-column>
-      <el-table-column sortable prop="deptNo" label="部门代码" width="300">
+      <el-table-column sortable prop="name" label="部门名称" width="300">
       </el-table-column>
-      <el-table-column sortable prop="editTime" label="修改时间" width="300">
+<!--      <el-table-column sortable prop="deptNo" label="部门代码" width="300">-->
+<!--      </el-table-column>-->
+      <el-table-column sortable prop="createTime" label="创建时间" width="300">
         <template slot-scope="scope">
-          <div>{{scope.row.editTime|timestampToTime}}</div>
+          <div>{{scope.row.createTime|timestampToTime}}</div>
         </template>
       </el-table-column>
-      <el-table-column sortable prop="editUser" label="修改人" width="300">
+      <el-table-column align="center" sortable prop="status" label="状态" min-width="50">
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.status==='0'?nshow:fshow" active-color="#13ce66" inactive-color="#ff4949"
+                     @change="editType(scope.$index, scope.row)">
+          </el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column sortable prop="remark" label="职责" width="300">
       </el-table-column>
       <el-table-column align="center" label="操作" min-width="300">
         <template slot-scope="scope">
@@ -48,11 +54,14 @@
     <!-- 编辑界面 -->
     <el-dialog :title="title" :visible.sync="editFormVisible" width="30%" @click="closeDialog">
       <el-form label-width="120px" :model="editForm" :rules="rules" ref="editForm">
-        <el-form-item label="部门名称" prop="deptName">
-          <el-input size="small" v-model="editForm.deptName" auto-complete="off" placeholder="请输入部门名称"></el-input>
+        <el-form-item label="部门编号" prop="id">
+          <el-input size="small" v-model="editForm.id" auto-complete="off" disabled></el-input>
         </el-form-item>
-        <el-form-item label="部门代码" prop="deptNo">
-          <el-input size="small" v-model="editForm.deptNo" auto-complete="off" placeholder="请输入部门代码"></el-input>
+        <el-form-item label="部门名称" prop="name">
+          <el-input size="small" v-model="editForm.name" auto-complete="off" placeholder="请输入部门名称"></el-input>
+        </el-form-item>
+        <el-form-item label="部门职责" prop="remark">
+          <el-input size="small" v-model="editForm.remark" auto-complete="off" placeholder="请输入部门职责"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -75,24 +84,23 @@ export default {
       editFormVisible: false, //控制编辑页面显示与隐藏
       title: '添加',
       editForm: {
-        deptId: '',
-        deptName: '',
-        deptNo: '',
-        token: localStorage.getItem('logintoken')
+        id: '',
+        name: '',
+        remark: '',
+        // token: localStorage.getItem('logintoken')
       },
       // rules表单验证
       rules: {
-        deptName: [
+        name: [
           { required: true, message: '请输入部门名称', trigger: 'blur' }
         ],
-        deptNo: [{ required: true, message: '请输入部门代码', trigger: 'blur' }]
+        remark: [{ required: true, message: '请输入部门职责', trigger: 'blur' }]
       },
       formInline: {
         page: 1,
         limit: 10,
-        varLable: '',
-        varName: '',
-        token: localStorage.getItem('logintoken')
+        name: '',
+        // token: localStorage.getItem('logintoken')
       },
       // 删除部门
       seletedata: {
@@ -131,94 +139,30 @@ export default {
     // 获取公司列表
     getdata(parameter) {
       this.loading = true
-      // 模拟数据开始
-      let res = {
-        code: 0,
-        msg: null,
-        count: 5,
-        data: [
-          {
-            addUser: null,
-            editUser: null,
-            addTime: 1521062371000,
-            editTime: 1526700200000,
-            deptId: 2,
-            deptName: 'XX分公司',
-            deptNo: '1',
-            parentId: 1
-          },
-          {
-            addUser: null,
-            editUser: null,
-            addTime: 1521063247000,
-            editTime: 1526652291000,
-            deptId: 3,
-            deptName: '上海测试',
-            deptNo: '02',
-            parentId: 1
-          },
-          {
-            addUser: null,
-            editUser: null,
-            addTime: 1526349555000,
-            editTime: 1526349565000,
-            deptId: 12,
-            deptName: '1',
-            deptNo: '11',
-            parentId: 1
-          },
-          {
-            addUser: null,
-            editUser: null,
-            addTime: 1526373178000,
-            editTime: 1526373178000,
-            deptId: 13,
-            deptName: '5',
-            deptNo: '5',
-            parentId: 1
-          },
-          {
-            addUser: null,
-            editUser: null,
-            addTime: 1526453107000,
-            editTime: 1526453107000,
-            deptId: 17,
-            deptName: 'v',
-            deptNo: 'v',
-            parentId: 1
-          }
-        ]
-      }
-      this.loading = false
-      this.listData = res.data
-      this.pageparm.currentPage = this.formInline.page
-      this.pageparm.pageSize = this.formInline.limit
-      this.pageparm.total = res.count
-      // 模拟数据结束
 
       /***
        * 调用接口，注释上面模拟数据 取消下面注释
        */
-      // deptList(parameter)
-      //   .then(res => {
-      //     this.loading = false
-      //     if (res.success == false) {
-      //       this.$message({
-      //         type: 'info',
-      //         message: res.msg
-      //       })
-      //     } else {
-      //       this.listData = res.data
-      //       // 分页赋值
-      //       this.pageparm.currentPage = this.formInline.page
-      //       this.pageparm.pageSize = this.formInline.limit
-      //       this.pageparm.total = res.count
-      //     }
-      //   })
-      //   .catch(err => {
-      //     this.loading = false
-      //     this.$message.error('菜单加载失败，请稍后再试！')
-      //   })
+      deptList(parameter)
+        .then(res => {
+          this.loading = false
+          if (res.status !== 200) {
+            this.$message({
+              type: 'info',
+              message: res.msg
+            })
+          } else {
+            this.listData = res.data.records
+            // 分页赋值
+            this.pageparm.currentPage = this.formInline.page
+            this.pageparm.pageSize = this.formInline.limit
+            this.pageparm.total = res.data.total
+          }
+        })
+        .catch(err => {
+          this.loading = false
+          this.$message.error('菜单加载失败，请稍后再试！')
+        })
     },
     // 分页插件事件
     callFather(parm) {
@@ -235,14 +179,14 @@ export default {
       this.editFormVisible = true
       if (row != undefined && row != 'undefined') {
         this.title = '修改'
-        this.editForm.deptId = row.deptId
-        this.editForm.deptName = row.deptName
-        this.editForm.deptNo = row.deptNo
+        this.editForm.id = row.id
+        this.editForm.name = row.name
+        this.editForm.remark = row.remark
       } else {
         this.title = '添加'
-        this.editForm.deptId = ''
-        this.editForm.deptName = ''
-        this.editForm.deptNo = ''
+        this.editForm.id = ''
+        this.editForm.name = ''
+        this.editForm.remark = ''
       }
     },
     // 编辑、增加页面保存方法
@@ -253,11 +197,11 @@ export default {
             .then(res => {
               this.editFormVisible = false
               this.loading = false
-              if (res.success) {
+              if (res.status ===200) {
                 this.getdata(this.formInline)
                 this.$message({
                   type: 'success',
-                  message: '公司保存成功！'
+                  message: res.msg
                 })
               } else {
                 this.$message({
@@ -269,7 +213,7 @@ export default {
             .catch(err => {
               this.editFormVisible = false
               this.loading = false
-              this.$message.error('公司保存失败，请稍后再试！')
+              this.$message.error('部门保存失败，请稍后再试！')
             })
         } else {
           return false
@@ -284,12 +228,15 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          deptDelete(row.deptId)
+          let parm={
+            id:row.id
+          }
+          deptDelete(parm)
             .then(res => {
-              if (res.success) {
+              if (res.status) {
                 this.$message({
                   type: 'success',
-                  message: '公司已删除!'
+                  message: res.msg
                 })
                 this.getdata(this.formInline)
               } else {
@@ -301,7 +248,7 @@ export default {
             })
             .catch(err => {
               this.loading = false
-              this.$message.error('公司删除失败，请稍后再试！')
+              this.$message.error('部门删除失败，请稍后再试！')
             })
         })
         .catch(() => {
@@ -328,5 +275,4 @@ export default {
 }
 </style>
 
- 
- 
+

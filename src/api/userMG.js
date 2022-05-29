@@ -78,11 +78,11 @@ export const RoleRightSave = (params) => { return req("post", "/api/role/changem
  * 公司管理
  **/
 // 公司管理-获取公司列表
-export const deptList = (params) => { return req("post", "/api/Dept/list", params) };
+export const deptList = (params) => { return req("post", "/api/dept/list", params) };
 // 公司管理-保存（添加编辑）
-export const deptSave = (params) => { return req("post", "/api/Dept/save", params) };
+export const deptSave = (params) => { return req("post", "/api/dept/save", params) };
 // 公司管理-删除公司
-export const deptDelete = (params) => { return axios.get("/api/Dept/delete?ids=" + params + "&token=" + localStorage.getItem('logintoken')).then(res => res.data) };
+export const deptDelete = (params) => { return req("post", "/api/dept/delete", params) };
 
 /**
  * 系统环境变量
