@@ -85,7 +85,8 @@ export const deptSave = (params) => { return req("post", "/api/dept/save", param
 export const deptDelete = (params) => { return req("post", "/api/dept/delete", params) };
 // 部门管理-修改状态
 export const deptStatus = (params) => { return req("post", "/api/dept/status", params) }
-
+// 部门管理-查看员工列表
+export const listEmpDataDept = (params) => { return req("post", "/api/dept/listEmp", params) }
 
 /**
  * 职位管理
@@ -99,7 +100,8 @@ export const jobSave = (params) => { return req("post", "/api/job/save", params)
 export const jobDelete = (params) => { return req("post", "/api/job/delete", params) };
 // 职位管理-修改状态
 export const jobStatus = (params) => { return req("post", "/api/job/status", params) }
-
+// 职位管理-查看员工列表
+export const listEmpDataJob = (params) => { return req("post", "/api/job/listEmp", params) }
 
 /**
  * 员工管理

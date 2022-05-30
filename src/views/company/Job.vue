@@ -46,6 +46,7 @@
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button size="mini" type="danger" @click="deleteUser(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini"  @click="listEmp(scope.$index, scope.row)">查看员工列表</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -69,6 +70,25 @@
         <el-button size="small" type="primary" :loading="loading" class="title" @click="submitForm('editForm')">保存</el-button>
       </div>
     </el-dialog>
+    <!-- 员工列表 -->
+    <el-dialog :title="title" :visible.sync="listEmpFormVisible" width="70%" @click="closeDialog">
+      <el-table size="small" :data="listEmpData" highlight-current-row v-loading="loading" border element-loading-text="拼命加载中" style="width: 100%;">
+        <el-table-column align="center" type="selection" width="60">
+        </el-table-column>
+        <el-table-column sortable prop="id" label="员工编号" width="100">
+        </el-table-column>
+        <el-table-column sortable prop="name" label="员工姓名" width="100">
+        </el-table-column>
+        <el-table-column align="center" sortable prop="phoneNumber" label="手机号" width="120">
+        </el-table-column>
+        <el-table-column align="center" sortable prop="sex" label="性别" min-width="50">
+        </el-table-column>
+        <el-table-column align="center" sortable prop="email" label="邮箱" min-width="120">
+        </el-table-column>
+        <el-table-column align="center" sortable prop="education" label="学历" min-width="120">
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -82,7 +102,7 @@ import {
   jobList,
   jobSave,
   jobDelete,
-  jobStatus
+  jobStatus, listEmpData, listEmpDataJob
 } from '../../api/userMG'
 import Pagination from '../../components/Pagination'
 export default {
@@ -92,6 +112,7 @@ export default {
       fshow: false, //switch关闭
       loading: false, //是显示加载
       editFormVisible: false, //控制编辑页面显示与隐藏
+      listEmpFormVisible: false, //控制员工列表界面显示与隐藏
       title: '添加',
       editForm: {
         id: '',
@@ -119,6 +140,7 @@ export default {
       },
       userparm: [], //搜索权限
       listData: [], //用户数据
+      listEmpData:[],//员工数据
       // 分页参数
       pageparm: {
         currentPage: 1,
@@ -266,6 +288,29 @@ export default {
             type: 'info',
             message: '已取消删除'
           })
+        })
+    },
+    listEmp: function(index, row) {
+      this.listEmpFormVisible = true
+      let parm={
+        id:row.id
+      }
+      listEmpDataJob(parm)
+        .then(res => {
+          this.loading = false
+          if (res.status !==200) {
+            this.$message({
+              type: 'info',
+              message: res.msg
+            })
+          } else {
+            this.listEmpData = res.data
+          }
+        })
+        .catch(err => {
+          this.editFormVisible = false
+          this.loading = false
+          this.$message.error('部门保存失败，请稍后再试！')
         })
     },
     // 修改type
