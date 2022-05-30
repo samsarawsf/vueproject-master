@@ -113,6 +113,10 @@ export const empStatus = (params) => { return req("post", "/api/emp/status", par
 export const empSave = (params) => { return req("post", "/api/emp/save", params) };
 // 员工管理-删除员工
 export const empDelete = (params) => { return req("post","/api/emp/delete",params)};
+// 员工管理-分配部门
+export const changeDept = (params) => { return  req("post", "/api/emp/changeDept", params) };
+// 员工管理-分配岗位
+export const changeJob = (params) => { return  req("post", "/api/emp/changeJob", params) };
 /**
  * 系统环境变量
  **/

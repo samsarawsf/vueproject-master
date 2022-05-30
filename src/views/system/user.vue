@@ -598,6 +598,7 @@ export default {
     },
     // 分配角色
     dataAccess: function (index, row) {
+      this.selectedRoleId = row.role.id
       this.dataAccessshow = true
       this.userId=row.id
     },

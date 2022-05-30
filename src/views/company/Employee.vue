@@ -26,7 +26,7 @@
       <el-form-item>
         <el-button size="small" type="primary" icon="el-icon-search" @click="search">搜索</el-button>
         <el-button size="small" type="primary" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
-        <el-button size="small" type="primary" @click="handleunit()">部门设置</el-button>
+<!--        <el-button size="small" type="primary" @click="handleunit()">部门设置</el-button>-->
       </el-form-item>
     </el-form>
     <!--列表-->
@@ -66,6 +66,8 @@
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button size="mini" type="danger" @click="deleteUser(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" type="success" @click="dataDept(scope.$index, scope.row)">分配部门</el-button>
+          <el-button size="mini" type="success" @click="dataJob(scope.$index, scope.row)">分配岗位</el-button>
        </template>
       </el-table-column>
     </el-table>
@@ -108,12 +110,12 @@
         </el-button>
       </div>
     </el-dialog>
-    <!-- 分配角色 -->
-    <el-dialog title="分配角色" :visible.sync="dataAccessshow" width="20%" @click='closeDialog("perm")'>
-     <p align="center">分配新角色:
-       <el-select v-model="selectedRoleId" placeholder="请选择">
+    <!-- 分配部门 -->
+    <el-dialog title="分配部门" :visible.sync="dataAccessshow" width="20%" @click='closeDialog("dept")'>
+     <p align="center">分配部门:
+       <el-select v-model="selectedDeptId" placeholder="请选择">
          <el-option
-           v-for="item in roleList"
+           v-for="item in deptList"
            :key="item.id"
            :label="item.name"
            :value="item.id">
@@ -121,17 +123,23 @@
        </el-select></p>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click='closeDialog("perm")'>取消</el-button>
-        <el-button size="small" type="primary" :loading="loading" class="title" @click="menuPermSave">保存</el-button>
+        <el-button size="small" type="primary" :loading="loading" class="title" @click="employeeDeptSave">保存</el-button>
       </div>
     </el-dialog>
-    <!-- 所属单位 -->
-    <el-dialog title="所属单位" :visible.sync="unitAccessshow" width="30%" @click='closeDialog("unit")'>
-      <el-tree ref="tree" default-expand-all="" :data="UserDept" :props="defaultProps" @check-change="handleClick"
-               :default-checked-keys="checkmenu" node-key="id" show-checkbox check-strictly>
-      </el-tree>
+    <!-- 分配岗位 -->
+    <el-dialog title="分配岗位" :visible.sync="unitAccessshow" width="30%" @click='closeDialog("job")'>
+      <p align="center">分配岗位:
+        <el-select v-model="selectedJobId" placeholder="请选择">
+          <el-option
+            v-for="item in jobList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select></p>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click='closeDialog("unit")'>取消</el-button>
-        <el-button size="small" type="primary" :loading="loading" class="title" @click="unitPermSave">保存</el-button>
+        <el-button size="small" @click='closeDialog("job")'>取消</el-button>
+        <el-button size="small" type="primary" :loading="loading" class="title" @click="employeeJobSave">保存</el-button>
       </div>
     </el-dialog>
   </div>
@@ -140,17 +148,11 @@
 <script>
 // 导入请求方法
 import {
-  userList,
-  userSave,
-  userDelete,
   userPwd,
   userExpireToken,
   userFlashCache,
-  userStatus,
-  changeRole,
-  UserDeptSave,
   UserDeptdeptTree,
-  UserChangeDept, roleList, checkUserName, empList, empStatus, empSave, empDelete
+  UserChangeDept, empList, empStatus, empSave, empDelete, deptList, changeDept, jobList, changeJob
 } from '../../api/userMG'
 import Pagination from '../../components/Pagination'
 
@@ -188,7 +190,7 @@ export default {
         name: [
           {required: true, message: '请输入姓名', trigger: 'blur'}
         ],
-        roleId: [{required: true, message: '请选择角色', trigger: 'blur'}],
+        roleId: [{required: true, message: '请选择部门', trigger: 'blur'}],
         phoneNumber: [
           {required: true, message: '请输入手机号', trigger: 'blur'},
           {
@@ -240,9 +242,11 @@ export default {
         children: 'children',
         label: 'name'
       },
-      roleList: [],
-      userId:'',
-      selectedRoleId:'',
+      deptList: [],
+      jobList:[],
+      EmployeeId:'',
+      selectedDeptId:'',
+      selectedJobId:'',
       // 选中
       checkmenu: [],
       //参数role
@@ -303,23 +307,40 @@ export default {
           this.pageparm.total = res.data.total
         }
       })
-        // ,
-        // roleList()
-        //   .then(res => {
-        //     this.loading = false
-        //     if (res.status !==  200) {
-        //       this.$message({
-        //         type: 'info',
-        //         message: res.msg
-        //       })
-        //     } else {
-        //       this.roleList = res.data.records
-        //     }
-        //   })
-        //   .catch(err => {
-        //     this.loading = false
-        //     this.$message.error('获取角色列表失败，请稍后再试！')
-        //   })
+        ,
+        deptList()
+          .then(res => {
+            this.loading = false
+            if (res.status !==  200) {
+              this.$message({
+                type: 'info',
+                message: res.msg
+              })
+            } else {
+              this.deptList = res.data.records
+            }
+          })
+          .catch(err => {
+            this.loading = false
+            this.$message.error('获取部门列表失败，请稍后再试！')
+          })
+        ,
+        jobList()
+          .then(res => {
+            this.loading = false
+            if (res.status !==  200) {
+              this.$message({
+                type: 'info',
+                message: res.msg
+              })
+            } else {
+              this.jobList = res.data.records
+            }
+          })
+          .catch(err => {
+            this.loading = false
+            this.$message.error('获取部门列表失败，请稍后再试！')
+          })
     },
     // 分页插件事件
     callFather(parm) {
@@ -482,9 +503,9 @@ export default {
     closeDialog(dialog) {
       if (dialog == 'edit') {
         this.editFormVisible = false
-      } else if (dialog == 'perm') {
+      } else if (dialog == 'dept') {
         this.dataAccessshow = false
-      } else if (dialog == 'unit') {
+      } else if (dialog == 'job') {
         this.unitAccessshow = false
       }
     },
@@ -567,19 +588,26 @@ export default {
           })
         })
     },
-    // 分配角色
-    dataAccess: function (index, row) {
+    // 分配部门
+    dataDept: function (index, row) {
+      this.selectedDeptId = row.deptId
       this.dataAccessshow = true
-      this.userId=row.id
+      this.EmployeeId=row.id
+    },
+    // 分配部门
+    dataJob: function (index, row) {
+      this.selectedJobId = row.jobId
+      this.unitAccessshow = true
+      this.EmployeeId=row.id
     },
 
-    // 分配角色-保存
-    menuPermSave() {
+    // 分配部门-保存
+    employeeDeptSave() {
       let parm={
-        id: this.userId,
-        roleId:this.selectedRoleId
+        id: this.EmployeeId,
+        deptId:this.selectedDeptId
       }
-      changeRole(parm)
+      changeDept(parm)
         .then(res => {
           if (res.status ===200) {
             this.$message({
@@ -597,7 +625,34 @@ export default {
         })
         .catch(err => {
           this.loading = false
-          this.$message.error('获取权限失败，请稍后再试！')
+          this.$message.error('获取部门失败，请稍后再试！')
+        })
+    },
+    // 分配岗位-保存
+    employeeJobSave() {
+      let parm={
+        id: this.EmployeeId,
+        jobId:this.selectedJobId
+      }
+      changeJob(parm)
+        .then(res => {
+          if (res.status ===200) {
+            this.$message({
+              type: 'success',
+              message: res.msg
+            })
+            this.unitAccessshow = false
+            this.getdata(this.formInline)
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.msg
+            })
+          }
+        })
+        .catch(err => {
+          this.loading = false
+          this.$message.error('获取岗位失败，请稍后再试！')
         })
     },
     // 下线用户
