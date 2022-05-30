@@ -26,7 +26,7 @@
       <el-form-item>
         <el-button size="small" type="primary" icon="el-icon-search" @click="search">搜索</el-button>
         <el-button size="small" type="primary" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
-        <el-button size="small" type="primary" @click="handleunit()">部门设置</el-button>
+<!--        <el-button size="small" type="primary" @click="handleunit()">部门设置</el-button>-->
       </el-form-item>
     </el-form>
     <!--列表-->

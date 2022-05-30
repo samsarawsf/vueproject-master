@@ -34,7 +34,7 @@
               border element-loading-text="拼命加载中" style="width: 100%;">
       <el-table-column align="center" type="selection" width="50">
       </el-table-column>
-      <el-table-column align="center" sortable prop="id" label="编号" width="120">
+      <el-table-column align="center" sortable prop="id" label="编号" width="50">
       </el-table-column>
       <el-table-column align="center" sortable prop="name" label="姓名" width="120">
       </el-table-column>
@@ -62,7 +62,7 @@
           </el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="300">
+      <el-table-column label="操作" min-width="350">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button size="mini" type="danger" @click="deleteUser(scope.$index, scope.row)">删除</el-button>
