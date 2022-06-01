@@ -59,7 +59,7 @@
     // 创建完毕状态(里面是操作)
     created() {
       this.$message({
-        message: '账号密码及验证码不为空即可',
+        message: '账号：wsf 密码：123',
         type: 'success'
       })
       // 获取图形验证码

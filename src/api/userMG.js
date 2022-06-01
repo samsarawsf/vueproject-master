@@ -13,7 +13,8 @@ export const login = (params) => { return loginreq("post", "/api/user/login", pa
 export const menu = (params) => { return axios.get("/api/menu?&token=" + localStorage.getItem('logintoken')).then(res => res.data) };
 // 退出接口
 export const loginout = () => { return req("post", "/api/user/logout") };
-
+// 修改个人密码
+export const updatePwd = (params) => { return req("post", "/api/user/updatePwd", params) };
 /**
  * 用户管理
  **/
