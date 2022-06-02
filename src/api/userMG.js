@@ -15,6 +15,10 @@ export const menu = (params) => { return axios.get("/api/menu?&token=" + localSt
 export const loginout = () => { return req("post", "/api/user/logout") };
 // 修改个人密码
 export const updatePwd = (params) => { return req("post", "/api/user/updatePwd", params) };
+// 修改个人信息
+export const updateContent = (params) => { return req("post", "/api/user/updateContent", params) };
+// 查询个人信息
+export const getUserDetail = (params) => { return req("post", "/api/user/getUserDetail", params) };
 /**
  * 用户管理
  **/

@@ -87,9 +87,7 @@
             </template>
           </el-select>
         </el-form-item>
-        <el-form-item label="权限编号">
-          <el-input size="small" v-model="editForm.id" auto-complete="off" placeholder="权限编号" disabled></el-input>
-        </el-form-item>
+          <el-input size="small" v-model="editForm.id" auto-complete="off" placeholder="权限编号" type="hidden"></el-input>
         <el-form-item label="权限名称" prop="menuName">
           <el-input size="small" v-model="editForm.menuName" auto-complete="off" placeholder="权限名称"></el-input>
         </el-form-item>

@@ -76,9 +76,7 @@
     <!-- 编辑界面 -->
     <el-dialog :title="title" :visible.sync="editFormVisible" width="30%" @click='closeDialog("edit")'>
       <el-form label-width="80px" ref="editForm" :model="editForm" :rules="rules">
-        <el-form-item label="编号" prop="id">
-          <el-input size="small" v-model="editForm.id" auto-complete="off" placeholder="" disabled></el-input>
-        </el-form-item>
+          <el-input size="small" v-model="editForm.id" auto-complete="off" placeholder="" type="hidden"></el-input>
         <el-form-item label="姓名" prop="name">
           <el-input size="small" v-model="editForm.name" auto-complete="off"  placeholder="请输入姓名" @blur="checkUserName(editForm.userName)"></el-input>
         </el-form-item>

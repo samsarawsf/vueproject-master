@@ -10,11 +10,35 @@
       <el-submenu index="2" class="submenu">
         <!-- <template slot="title">{{user.userRealName}}</template> -->
         <template slot="title">{{user.data.nickName}}</template>
-<!--        <el-menu-item index="2-1">设置</el-menu-item>-->
-        <el-menu-item @click="content()" index="2-1">修改密码</el-menu-item>
-        <el-menu-item @click="exit()" index="2-2">退出</el-menu-item>
+        <el-menu-item  @click="content('content')" index="2-1">个人中心</el-menu-item>
+        <el-menu-item @click="content('pwd')" index="2-2">修改密码</el-menu-item>
+        <el-menu-item @click="exit()" index="2-3">退出</el-menu-item>
       </el-submenu>
     </el-menu>
+    <!-- 编辑界面 -->
+    <el-dialog :title="title" :visible.sync="editFormVisible" width="30%" @click='closeDialog("edit")'>
+      <el-form label-width="80px" ref="editForm" :model="editForm" :rules="rules">
+       <el-form-item label="姓名" prop="nickName">
+          <el-input size="small" v-model="editForm.nickName" auto-complete="off" placeholder="请输入姓名"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号" prop="phonenumber">
+          <el-input size="small" v-model="editForm.phonenumber" placeholder="请输入手机号"></el-input>
+        </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-radio v-model="editForm.sex" label="男">男</el-radio>
+          <el-radio v-model="editForm.sex" label="女">女</el-radio>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input size="small" v-model="editForm.email" placeholder="请输入邮箱"></el-input>
+        </el-form-item>
+
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click='closeDialog("edit")'>取消</el-button>
+        <el-button size="small" type="primary"  class="title" @click="submitFormContent()">保存
+        </el-button>
+      </div>
+    </el-dialog>
     <el-dialog :title="title" :visible.sync="resetPassword" width="50%" @click="closeDialog">
       <h2 align="center">你好！{{ user.data.nickName }} 同学</h2>
       <el-form :model="passForm" status-icon :rules="rules" ref="passForm" label-width="100px">
@@ -36,7 +60,7 @@
   </div>
 </template>
 <script>
-import {loginout, updatePwd} from '../api/userMG'
+import {getUserDetail, loginout, updateContent, updatePwd, userSave} from '../api/userMG'
 export default {
   name: 'navcon',
   data() {
@@ -54,8 +78,18 @@ export default {
       imgshow: require('../assets/img/show.png'),
       imgsq: require('../assets/img/sq.png'),
       user: {},
-      title:'修改密码',
+      title:'',
       resetPassword: false, //控制修改页面的显示与隐藏
+      editFormVisible: false,
+      // 编辑与添加
+      editForm: {
+        id: '',
+        nickName: '',
+        phonenumber: '',
+        sex: '',
+        email: '',
+        // token: localStorage.getItem('logintoken')
+      },
       passForm: {
         password: '',
         checkPass: '',
@@ -71,7 +105,33 @@ export default {
         ],
         currentPass: [
           { required: true, message: '请输入当前密码', trigger: 'blur' },
-        ]
+        ],
+        userName: [
+          {required: true, message: '请输入用户名', trigger: 'blur'}
+        ],
+        nickName: [
+          {required: true, message: '请输入姓名', trigger: 'blur'}
+        ],
+        roleId: [{required: true, message: '请选择角色', trigger: 'blur'}],
+        phonenumber: [
+          {required: true, message: '请输入手机号', trigger: 'blur'},
+          {
+            pattern: /^1(3\d|47|5((?!4)\d)|7(0|1|[6-8])|8\d)\d{8,8}$/,
+            required: true,
+            message: '请输入正确的手机号',
+            trigger: 'blur'
+          }
+        ],
+        email: [
+          {required: true, message: '请输入邮箱', trigger: 'blur'},
+          {
+            pattern: /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+            required: true,
+            message: '请输入正确的邮箱',
+            trigger: 'blur'
+          }
+        ],
+        sex: [{required: true, message: '请选择性别', trigger: 'blur'}]
       }
     }
   },
@@ -181,9 +241,45 @@ export default {
           })
         })
     },
-    content(){
+    submitFormContent(){
+      updateContent(this.editForm)
+        .then(res => {
+          this.editFormVisible = false
+          if (res.status ===200) {
+            this.$message({
+              type: 'success',
+              message: res.msg
+            })
+          } else {
+            this.$message({
+              type: 'info',
+              message: res.msg
+            })
+          }
+        })
+    },
+    content(dialog){
       // this.$router.push({ path: '/resetPassword' })
-      this.resetPassword=true
+      // console.log(this.user)
+      if(dialog==='pwd'){
+        this.title='修改密码',
+        this.resetPassword=true
+      }
+      if(dialog==='content'){
+        this.title='修改个人信息'
+        this.editFormVisible=true
+        let parm={
+          id: this.user.data.id
+        }
+        getUserDetail(parm)
+          .then(res => {
+            this.editForm.nickName =res.data.nickName
+            this.editForm.phonenumber =res.data.phonenumber
+            this.editForm.sex =res.data.sex
+            this.editForm.email =res.data.email
+            this.editForm.id =res.data.id
+          })
+      }
     }
     ,
     // 切换显示

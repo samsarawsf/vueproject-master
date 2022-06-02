@@ -79,9 +79,7 @@
         <!--        <el-form-item label="用户名" prop="userName">-->
         <!--          <el-input size="small" v-model="editForm.userName" auto-complete="off" placeholder="请输入用户名"></el-input>-->
         <!--        </el-form-item>-->
-        <el-form-item label="编号" prop="id">
-          <el-input size="small" v-model="editForm.id" auto-complete="off" placeholder="" disabled></el-input>
-        </el-form-item>
+          <el-input size="small" v-model="editForm.id" auto-complete="off" placeholder="" type="hidden"></el-input>
         <el-form-item label="用户名" prop="userName">
           <el-input size="small" v-model="editForm.userName" auto-complete="off"  placeholder="请输入用户名" @blur="checkUserName(editForm.userName)"></el-input>
         </el-form-item>

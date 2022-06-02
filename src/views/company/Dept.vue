@@ -55,9 +55,7 @@
     <!-- 编辑界面 -->
     <el-dialog :title="title" :visible.sync="editFormVisible" width="30%" @click="closeDialog">
       <el-form label-width="120px" :model="editForm" :rules="rules" ref="editForm">
-        <el-form-item label="部门编号" prop="id">
-          <el-input size="small" v-model="editForm.id" auto-complete="off" disabled></el-input>
-        </el-form-item>
+          <el-input size="small" v-model="editForm.id" auto-complete="off" type="hidden"></el-input>
         <el-form-item label="部门名称" prop="name">
           <el-input size="small" v-model="editForm.name" auto-complete="off" placeholder="请输入部门名称"></el-input>
         </el-form-item>
