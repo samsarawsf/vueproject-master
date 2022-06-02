@@ -110,7 +110,7 @@
                   // 缓存用户个人信息
                   localStorage.setItem('userdata', JSON.stringify(res))
                   this.$store.commit('login', 'true')
-                  this.$router.push({path: '/system/user'})
+                  this.$router.push({path: '/company/Dept'})
                 }, 1000)
               } else {
                 this.$message.error(res.msg)

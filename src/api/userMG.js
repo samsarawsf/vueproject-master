@@ -19,6 +19,8 @@ export const updatePwd = (params) => { return req("post", "/api/user/updatePwd",
 export const updateContent = (params) => { return req("post", "/api/user/updateContent", params) };
 // 查询个人信息
 export const getUserDetail = (params) => { return req("post", "/api/user/getUserDetail", params) };
+// 查询个人权限
+export const myMenuTree = (params) => { return req("post","/api/menu/myMenuTree",params) };
 /**
  * 用户管理
  **/

@@ -21,13 +21,14 @@
   </el-menu>
 </template>
 <script>
-import {menu, MenuTree} from '../api/userMG'
+import {menu, MenuTree, myMenuTree} from '../api/userMG'
 export default {
   name: 'leftnav',
   data() {
     return {
       collapsed: false,
-      allmenu: []
+      allmenu: [],
+      user: {},
     }
   },
   // 创建完毕状态(里面是操作)
@@ -188,7 +189,7 @@ export default {
     //   msg: 'success'
     // }
     //       this.allmenu = res.data
-
+    this.user = JSON.parse(localStorage.getItem('userdata'))
     // menu(localStorage.getItem('logintoken'))
     //   .then(res => {
     //     console.log(JSON.stringify(res))
@@ -202,7 +203,10 @@ export default {
     //   .catch(err => {
     //     this.$message.error('菜单加载失败，请稍后再试！')
     //   })
-    MenuTree()
+    let parm={
+      id:this.user.data.id
+    }
+    myMenuTree(parm)
       .then(
         res =>{
           this.loading = false
