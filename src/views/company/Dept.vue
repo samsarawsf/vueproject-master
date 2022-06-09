@@ -240,15 +240,16 @@ export default {
             .then(res => {
               this.editFormVisible = false
               this.loading = false
-              if (res.status ===200) {
+              if (res.status !==200) {
                 this.getdata(this.formInline)
                 this.$message({
-                  type: 'success',
+                  type: 'info',
                   message: res.msg
                 })
               } else {
+                this.getdata(this.formInline)
                 this.$message({
-                  type: 'info',
+                  type: 'success',
                   message: res.msg
                 })
               }
@@ -276,7 +277,7 @@ export default {
           }
           deptDelete(parm)
             .then(res => {
-              if (res.status) {
+              if (res.status ===200) {
                 this.$message({
                   type: 'success',
                   message: res.msg
@@ -318,9 +319,9 @@ export default {
       // 修改状态
       deptStatus(parm).then(res => {
         this.loading = false
-        if (res.status === 500) {
+        if (res.status !== 200) {
           this.$message({
-            type: 'error',
+            type: 'info',
             message: res.msg
           })
         } else {

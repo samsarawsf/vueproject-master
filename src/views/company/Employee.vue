@@ -367,9 +367,9 @@ export default {
       // 修改状态
       empStatus(parm).then(res => {
         this.loading = false
-        if (res.status === 500) {
+        if (res.status !== 200) {
           this.$message({
-            type: 'error',
+            type: 'info',
             message: res.msg
           })
         } else {

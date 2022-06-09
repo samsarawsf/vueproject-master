@@ -16,7 +16,7 @@
       </el-submenu>
     </el-menu>
     <!-- 编辑界面 -->
-    <el-dialog :title="title" :visible.sync="editFormVisible" width="30%" @click='closeDialog("edit")'>
+    <el-dialog :title="title" :visible.sync="editFormVisible" width="50%" @click='closeDialog("edit")'>
       <el-form label-width="80px" ref="editForm" :model="editForm" :rules="rules">
        <el-form-item label="姓名" prop="nickName">
           <el-input size="small" v-model="editForm.nickName" auto-complete="off" placeholder="请输入姓名"></el-input>
