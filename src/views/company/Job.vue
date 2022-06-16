@@ -289,6 +289,7 @@ export default {
         })
     },
     listEmp: function(index, row) {
+      this.title = ''
       this.listEmpFormVisible = true
       let parm={
         id:row.id

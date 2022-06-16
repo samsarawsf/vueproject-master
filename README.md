@@ -1,4 +1,4 @@
-# vue搭建后台管理界面模版（PC端）
+# 人事管理系统前端
 ------------------------
 
 
@@ -63,9 +63,36 @@ vue2 + vuex + vue-router + webpack + ES6/7 + axios + elementUI + 阿里图标ico
 - [x] 部门管理（增加、编辑、搜索、删除） -- 完成
 
 ### 说明
-此项目是在github上找的一个前端的模板，然后我自己根据模板开发了一套
+此项目是在github上找的一个前端的模板，然后我自己根据模板开发了一套后台
+后台链接：https://github.com/samsarawsf/springbootDemo
+原生的前端链接：https://gitee.com/nmgwap/vueproject
+
+![img.png](images/img.png)
 
 
+![img_1.png](images/img_1.png)
+
+
+![img_2.png](images/img_2.png)
+
+
+![](images/img_3.png)
+
+![](images/img_4.png)
+
+![](images/img_5.png)
+
+![](images/img_6.png)
+
+![](images/img_7.png)
+
+![](images/img_8.png)
+
+![](images/img_9.png)
+
+![](images/img_10.png)
+
+![](images/img_11.png)
 
 #### 运行项目
 ------------------------
